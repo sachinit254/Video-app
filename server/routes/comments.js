@@ -1,8 +1,8 @@
 import express from "express"
-import { test } from "../controllers/comment.js"
+import {  } from "../controllers/comment.js"
 
 const router = express.Router()
 
-router.get("/test",test)
+// router.get()
 
 export default router

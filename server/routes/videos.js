@@ -1,8 +1,8 @@
 import express from "express"
-import { test } from "../controllers/video.js"
+import { } from "../controllers/video.js"
 
 const router = express.Router()
 
-router.get("/test", test)
+// router.get()
 
 export default router
