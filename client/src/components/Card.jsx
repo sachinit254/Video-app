@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import image from "../images/pexels-kammeran-gonzalezkeola-12734585.jpg";
+import { format } from "timeago.js";
+import axios from "axios";
 
 const Container = styled.div`
-  width: ${(props)=> props.type !== "sm" && "250px"};
+  width: ${(props) => props.type !== "sm" && "250px"};
   margin-bottom: ${(props) => (props.type === "sm" ? "10px" : "45px")};
   cursor: pointer;
   display: ${(props) => props?.type === "sm" && "flex"};
@@ -12,22 +13,22 @@ const Container = styled.div`
 `;
 const Image = styled.img`
   width: 100%;
-  height: ${(props) => props?.type === "sm" ? "120px":"202px"};
+  height: ${(props) => (props?.type === "sm" ? "120px" : "202px")};
   background-color: #999;
-  flex:1;
+  flex: 1;
 `;
 const Details = styled.div`
   display: flex;
-  margin-top: ${(props)=>props.type !== "sm" &&  "16px"};
+  margin-top: ${(props) => props.type !== "sm" && "16px"};
   gap: 12px;
-  flex:1;
+  flex: 1;
 `;
 const ChannelImage = styled.img`
   width: 36px;
   height: 36px;
   border-radius: 50%;
   background-color: #999;
-  display: ${(props)=>props.type === "sm" && "none"}
+  display: ${(props) => props.type === "sm" && "none"};
 `;
 const Texts = styled.div``;
 const Title = styled.h1`
@@ -45,17 +46,29 @@ const Info = styled.div`
   color: ${({ theme }) => theme.textSoft};
 `;
 
-const Card = ({ type }) => {
+const Card = ({ type, video }) => {
+  const [channel, setChannel] = useState({});
+
+  useEffect(() => {
+    const fetchChannel = async () => {
+      const res = await axios.get(`/users/find/${video.userId}`);
+      setChannel(res.data);
+    };
+    fetchChannel();
+  }, [video.userId]);
+
   return (
     <Link to="/video/test" style={{ textDecoration: "none" }}>
       <Container type={type}>
-        <Image type={type} src={image} />
+        <Image type={type} src={video.imgUrl} />
         <Details type={type}>
-          <ChannelImage type={type} src={image} />
+          <ChannelImage type={type} src={channel.img} />
           <Texts>
-            <Title>Test Video</Title>
-            <ChannelName>Mr.Beast</ChannelName>
-            <Info>660,908 views - 1 day ago</Info>
+            <Title>{video.title}</Title>
+            <ChannelName>{channel.name}</ChannelName>
+            <Info>
+              {video.views} views - {format(video.createdAt)}
+            </Info>
           </Texts>
         </Details>
       </Container>
